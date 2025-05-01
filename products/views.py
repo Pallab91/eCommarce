@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from products.serializers import ProductSerializer
+from products.serializers import ProductSerializer, CategorySerializer
 
 
 # Create your views here.
@@ -51,8 +51,11 @@ def insertProduct(request):
 def createcategory(request):
     try:
         data=request.data
-        serializer = ProductSerializer(data=data)
-        print(serializer)
+        serializer = CategorySerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     except:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
